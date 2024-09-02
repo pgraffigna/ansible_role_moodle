@@ -1,0 +1,65 @@
+---
+- name: Incluye el archivo con las variables
+  ansible.builtin.include_vars:
+    file: vars_main.yml
+
+- name: Instala Apache
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    cache_valid_time: 3600
+  with_items: "{{ apache_packages }}"
+
+- name: Agregar PPA para PHP 8.1
+  ansible.builtin.apt_repository:
+    repo: ppa:ondrej/php
+
+- name: Instala módulos PHP
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    cache_valid_time: 3600
+  with_items: "{{ php_packages }}"
+
+- name: Eliminando index.html
+  ansible.builtin.file:
+    path: /var/www/html/index.html
+    state: absent
+
+- name: Desactivando server_name por default
+  ansible.builtin.command: a2dissite 000-default
+
+- name: Activa Apache mods
+  apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items: "{{ apache_mods }}"
+
+- name: Creando carpeta para SSL
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/ssl/certs
+    - /etc/ssl/private
+
+- name: Genera Private key
+  community.crypto.openssl_privatekey:
+    path: /etc/ssl/private/{{ server_name }}.key
+
+- name: Genera CSR
+  community.crypto.openssl_csr:
+    path: /etc/ssl/certs/{{ server_name }}.csr
+    privatekey_path: /etc/ssl/private/{{ server_name }}.key
+    common_name: "{{ server_name }}"
+    country_name: AR
+    email_address: "{{ email }}"
+    organization_name: Home
+
+- name: Genera Certificado auto-firmado
+  community.crypto.openssl_certificate:
+    path: /etc/ssl/certs/{{ server_name }}.crt
+    privatekey_path: /etc/ssl/private/{{ server_name }}.key
+    csr_path: /etc/ssl/certs/{{ server_name }}.csr
+    provider: selfsigned
+

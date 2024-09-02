@@ -1,0 +1,20 @@
+---
+# mariadb
+mysql_root_password: ""
+mysql_db: "moodle_db"
+mysql_user: "moodle_user"
+mysql_password: ""
+mariadb_url: https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+
+# apache
+email: "administradores@home.lab"
+server_name: "moodle.home.lab"
+http_port: "80"
+https_port: "443"
+usuario_apache: www-data
+grupo_apache: www-data
+
+# moodle
+moodle_url: "https://download.moodle.org/download.php/direct/stable404/moodle-4.4.3.zip"
+moodle_root_path: "/var/www/moodle_src/moodle"
+

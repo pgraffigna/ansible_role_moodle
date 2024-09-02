@@ -1,0 +1,61 @@
+---
+- name: Incluye el archivo con las variables
+  ansible.builtin.include_vars:
+    file: vars_main.yml
+
+- name: Descargando mariadb repo script
+  ansible.builtin.get_url:
+    url: "{{ mariadb_url }}"
+    dest: /tmp/mariadb_repo_setup
+    mode: 0755
+
+- name: Ejecutando script
+  ansible.builtin.command: bash /tmp/mariadb_repo_setup --mariadb-server-version=10.6
+
+- name: Instalando MariaDB v10.6
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ mariadb_packages }}"
+
+- name: Configura password para usuario root
+  ansible.builtin.mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Eliminar acceso anonimo
+  ansible.builtin.mysql_user:
+    name: ''
+    host_all: true
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+
+- name: Elimina la base de datos test
+  ansible.builtin.mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  no_log: true
+
+- name: Crea la base de datos para "{{ mysql_db }}"
+  ansible.builtin.mysql_db:
+    name: "{{ mysql_db }}"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  no_log: true
+
+- name: Crea el usuario "{{ mysql_user }}"
+  ansible.builtin.mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    host: localhost
+    state: present
+    update_password: on_create
+    priv: "{{ mysql_db }}.*:ALL"
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
