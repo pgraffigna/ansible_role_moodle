@@ -1,4 +1,4 @@
-# ansible_role_wordpress
+# ansible_role_moodle
 
 Playbook para desplegar un Servidor Moodle.
 
