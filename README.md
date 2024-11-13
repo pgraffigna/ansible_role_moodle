@@ -1,18 +1,19 @@
 # ansible_role_moodle
 
-Playbook para desplegar un Servidor Moodle.
+Repo con archivos para desplegar un Servidor Moodle.
 
-Testeado con Vagrant + qemu + ubuntu_2004/2204 + ansible_2.10
+Testeado con Vagrant + qemu + ubuntu_2204 + ansible_2.10
 
 ---
 
 ### Descripción
 
-La idea del proyecto es automatizar vía ansible la instalación/configuración de un servicio [moodle](https://docs.moodle.org/404/en/Installing_Moodle) para pruebas de laboratorio, el repo cuenta con 3 roles:
+La idea del proyecto es automatizar vía ansible la instalación/configuración de un servicio [moodle](https://docs.moodle.org/404/en/Installing_Moodle) para pruebas de laboratorio, el repo cuenta con 4 roles:
 
 1. mariadb
 2. apache
 3. moodle
+4. nginx
 
 ### Dependencias
 

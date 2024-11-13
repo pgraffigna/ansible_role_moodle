@@ -1,0 +1,82 @@
+---
+- name: Incluye el archivo con las variables
+  ansible.builtin.include_vars:
+    file: vars_main.yml
+
+- name: Instala nginx
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    cache_valid_time: 3600
+  with_items: "{{ nginx_packages }}"
+
+- name: Instala módulos PHP
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    update_cache: true
+    cache_valid_time: 3600
+  with_items: "{{ php_packages }}"
+
+- name: Agrega sitio
+  ansible.builtin.template:
+    src: files/sitio.conf.j2
+    dest: "/etc/nginx/sites-available/{{ server_name }}.conf"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Activa sitio
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/{{ server_name }}.conf
+    dest: /etc/nginx/sites-enabled/{{ server_name }}.conf
+    state: link
+
+- name: Crea directorios para moodle
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0755
+    recurse: yes
+  with_items:
+    - { path: /usr/share/nginx/html/moodle }
+    - { path: /usr/share/nginx/html/moodledata }
+
+- name: Descarga y descomprime moodle
+  ansible.builtin.unarchive:
+    src: "{{ moodle_stable_url }}"
+    dest: /usr/share/nginx/html/moodle
+    remote_src: true
+    owner: www-data
+    group: www-data
+    mode: 0755
+    extra_opts: ['--strip-components=1']
+
+- name: Genera Private key
+  community.crypto.openssl_privatekey:
+    path: /etc/ssl/private/{{ server_name }}.key
+
+- name: Genera CSR
+  community.crypto.openssl_csr:
+    path: /etc/ssl/certs/{{ server_name }}.csr
+    privatekey_path: /etc/ssl/private/{{ server_name }}.key
+    common_name: "{{ server_name }}"
+    country_name: AR
+    email_address: "{{ email }}"
+    organization_name: Home
+
+- name: Genera Certificado auto-firmado
+  community.crypto.openssl_certificate:
+    path: /etc/ssl/certs/{{ server_name }}.crt
+    privatekey_path: /etc/ssl/private/{{ server_name }}.key
+    csr_path: /etc/ssl/certs/{{ server_name }}.csr
+    provider: selfsigned
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
+

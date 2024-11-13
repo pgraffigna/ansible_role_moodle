@@ -1,0 +1,38 @@
+server {
+    listen 443 ssl http2;
+    server_name {{ server_name }};
+    root /usr/share/nginx/html/moodle;
+    index index.php index.html index.htm;
+    client_max_body_size 0;
+
+    # enables SSLv3/TLSv1, but not SSLv2 which is weak and should no longer be used.
+    ssl_protocols SSLv3 TLSv1.2;
+
+    # disables all weak ciphers
+    ssl_ciphers ALL:!aNULL:!ADH:!eNULL:!LOW:!EXP:RC4+RSA:+HIGH:+MEDIUM;
+
+    # logs
+    access_log /var/log/nginx/{{ server_name }}.ssl.access.log;
+    error_log /var/log/nginx/{{ server_name }}.ssl.error.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location /dataroot/ {
+        internal;
+        alias /usr/share/nginx/html/moodledata/;
+    }
+
+    location ~ [^/]\.php(/|$) {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    ssl on;
+    ssl_certificate /etc/ssl/certs/{{ server_name }}.crt;
+    ssl_certificate_key /etc/ssl/private/{{ server_name }}.key;
+    ssl_session_timeout  5m;
+}
