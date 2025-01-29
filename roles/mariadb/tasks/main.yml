@@ -12,7 +12,7 @@
 - name: Ejecutando script
   ansible.builtin.command: bash /tmp/mariadb_repo_setup --mariadb-server-version=10.6
 
-- name: Instalando MariaDB v10.6
+- name: Instalando mariadb v10.6
   ansible.builtin.apt:
     name: "{{ item }}"
     state: present

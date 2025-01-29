@@ -2,9 +2,9 @@
     ServerAdmin {{ email }}
     ServerName {{ server_name }}
     ServerAlias www.{{ server_name }}
-    DocumentRoot {{ moodle_root_path }}
+    DocumentRoot {{ moodle_path }}
 
-    <Directory {{ moodle_root_path }}>
+    <Directory {{ moodle_path }}>
         Options -Indexes
         AllowOverride All
     </Directory>

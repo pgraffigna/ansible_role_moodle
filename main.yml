@@ -5,4 +5,4 @@
   roles:
     - { role: mariadb, tags: [ 'mariadb' ] }
     - { role: apache2, tags: ['apache2'] }
-    - moodle
+    - { role: nginx, tags: [ 'nginx' ] }

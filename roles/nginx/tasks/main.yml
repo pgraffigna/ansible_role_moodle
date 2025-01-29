@@ -33,25 +33,21 @@
 
 - name: Crea directorios para moodle
   ansible.builtin.file:
-    path: "{{ item.path }}"
+    path: /usr/share/nginx/html/moodledata
     state: directory
     owner: www-data
     group: www-data
     mode: 0755
     recurse: yes
-  with_items:
-    - { path: /usr/share/nginx/html/moodle }
-    - { path: /usr/share/nginx/html/moodledata }
 
 - name: Descarga y descomprime moodle
   ansible.builtin.unarchive:
-    src: "{{ moodle_stable_url }}"
-    dest: /usr/share/nginx/html/moodle
+    src: "{{ moodle_url }}"
+    dest: /usr/share/nginx/html/
     remote_src: true
     owner: www-data
     group: www-data
     mode: 0755
-    extra_opts: ['--strip-components=1']
 
 - name: Genera Private key
   community.crypto.openssl_privatekey:
@@ -73,7 +69,7 @@
     csr_path: /etc/ssl/certs/{{ server_name }}.csr
     provider: selfsigned
 
-- name: Restart nginx
+- name: Reinicia nginx
   ansible.builtin.service:
     name: nginx
     state: restarted
