@@ -63,7 +63,7 @@
     organization_name: Home
 
 - name: Genera Certificado auto-firmado
-  community.crypto.openssl_certificate:
+  community.crypto.x509_certificate:
     path: /etc/ssl/certs/{{ server_name }}.crt
     privatekey_path: /etc/ssl/private/{{ server_name }}.key
     csr_path: /etc/ssl/certs/{{ server_name }}.csr

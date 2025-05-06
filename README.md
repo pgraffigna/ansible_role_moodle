@@ -1,8 +1,8 @@
 # ansible_role_moodle
 
-Repo con archivos para desplegar un Servidor Moodle v4.5.1+
+Repo con archivos para desplegar un Servidor Moodle v5.0.0
 
-Testeado con Vagrant + qemu + ubuntu_2204 + ansible_2.10
+Testeado con Vagrant + qemu + ubuntu_2404 + ansible_2.15.13
 
 ---
 
@@ -33,4 +33,3 @@ ansible-playbook main.yml --tags mariadb,nginx
 
 ### Extras
 * Archivo de configuración (Vagrantfile) para desplegar una VM descartable con ubuntu-22.04 con libvirt como hipervisor.
-  

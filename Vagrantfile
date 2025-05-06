@@ -1,5 +1,5 @@
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
-IMAGEN = "generic/ubuntu2204"
+IMAGEN = "boxen/ubuntu-24.04"
 HOSTNAME = "moodle.home.local"
 
 Vagrant.configure("2") do |config|

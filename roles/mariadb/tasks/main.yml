@@ -3,19 +3,11 @@
   ansible.builtin.include_vars:
     file: vars_main.yml
 
-- name: Descargando mariadb repo script
-  ansible.builtin.get_url:
-    url: "{{ mariadb_url }}"
-    dest: /tmp/mariadb_repo_setup
-    mode: 0755
-
-- name: Ejecutando script
-  ansible.builtin.command: bash /tmp/mariadb_repo_setup --mariadb-server-version=10.6
-
-- name: Instalando mariadb v10.6
+- name: Instalacion mariaDB
   ansible.builtin.apt:
-    name: "{{ item }}"
-    state: present
+    name: "{{ item  }}"
+    update_cache: true
+    cache_valid_time: 3600
   with_items: "{{ mariadb_packages }}"
 
 - name: Configura password para usuario root

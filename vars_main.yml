@@ -1,10 +1,9 @@
 ---
 # mariadb
-mysql_root_password: "r00t_p@ssword!"
+mysql_root_password: "root_test_password"
 mysql_db: "moodle_db"
 mysql_user: "moodle_user"
 mysql_password: "moodle_password"
-mariadb_url: https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
 
 # apache
 email: "administradores@home.lab"
@@ -15,6 +14,6 @@ usuario_apache: www-data
 grupo_apache: www-data
 
 # moodle
-moodle_url: "https://download.moodle.org/download.php/direct/stable405/moodle-latest-405.zip"
+moodle_url: "https://download.moodle.org/download.php/direct/stable500/moodle-latest-500.zip"
 moodle_path: "/var/www/moodle"
 
